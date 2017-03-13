@@ -1,0 +1,3 @@
+---
+# vars file for rattermeyer.vault
+vault_checksum_file_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version}}_SHA256SUMS"

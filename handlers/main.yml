@@ -1,0 +1,7 @@
+---
+# handlers file for rattermeyer.vault
+- name: restart vault
+  service:
+    name: vault
+    state: restarted
+    enabled: True

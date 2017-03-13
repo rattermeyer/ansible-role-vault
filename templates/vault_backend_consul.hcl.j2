@@ -1,0 +1,20 @@
+backend "consul" {
+  address = "{{ vault_consul }}"
+  redirect_addr = "http://{{ vault_redirect_addr }}:{{ vault_port }}"
+  cluster_addr = "http://{{ vault_primary_node }}:{{ vault_port }}/"
+  scheme = "{{ vault_config_consul_scheme }}"
+  check_timeout = "{{ vault_config_consul_check_timeout }}"
+  {% if vault_config_consul_token %}
+  token = "{{ vault_config_consul_token }}"
+  {% endif %}
+  {% if vault_config_consul_tls_ca_file %}
+  tls_ca_file = "{{ vault_config_consul_tls_ca_file }}"
+  {% endif %}
+  {% if vault_config_consul_tls_cert_file %}
+  tls_cert_file = "{{ vault_config_consul_tls_cert_file }}"
+  {% endif %}
+  {% if vault_config_consul_tls_key_file %}
+  tls_key_file = "{{ vault_config_consul_tls_key_file }}"
+  {% endif %}
+  path = "vault"
+}

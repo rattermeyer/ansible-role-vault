@@ -1,0 +1,39 @@
+---
+# tasks file for rattermeyer.vault
+
+# we are running as non-root
+- name: "add vault group"
+  group:
+    name: "{{ vault_group }}"
+    
+- name: "add vault user"
+  user:
+    name: "{{ vault_user }}"
+    comment: "Vault user"
+    group: "{{ vault_group }}"
+
+# according to https://www.vaultproject.io/docs/config/index.html required to allow non-root mlock
+- name: Enable non root mlock capability
+  command: "setcap cap_ipc_lock=+ep {{ vault_bin_path }}/vault"
+  when: not vault_config_disable_mlock
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group}}"
+  with_items:
+    - "{{ vault_data_path }}"
+    - "{{ vault_log_path }}"
+    - /var/run/vault
+    - "{{ vault_config_path }}"
+
+- name: install systemd script
+  template:
+    src: vault_systemd.service.j2
+    dest: /lib/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart vault

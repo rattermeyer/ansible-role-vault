@@ -1,0 +1,61 @@
+---
+# defaults file for rattermeyer.vault
+
+vault_version: "{{ lookup('env','VAULT_VERSION') | default('0.6.5', true) }}"
+vault_pkg: "vault_{{ vault_version }}_linux_amd64.zip"
+vault_zip_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_pkg }}"
+vault_zip_sha256: "91432c812b1264306f8d1ecf7dd237c3d7a8b2b6aebf4f887e487c4e7f69338c"
+vault_bin_path: "/usr/local/bin"
+vault_config_path: "/etc/vault.d"
+vault_data_path: "/var/vault"
+vault_log_path: "/var/log/vault"
+vault_user: "vault"
+vault_group: "vault"
+vault_group_name: "vault_nodes"
+vault_datacenter: "dc1"
+vault_log_level: "INFO"
+vault_syslog_enable: "true"
+vault_iface: "eth1"
+vault_address: "0.0.0.0"
+vault_redirect_addr: "{{ hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address'] }}"
+vault_port: "8200"
+vault_node_name: "{{ inventory_hostname_short }}"
+vault_primary_node: "{{hostvars[groups['primary'][0]]['ansible_fqdn']}}"
+
+vault_main_config: "{{ vault_config_path }}/vault_main.hcl"
+vault_backend: vault_backend_consul.hcl.j2
+vault_telemetry: vault_telemetry.hcl.j2
+
+vault_config_cluster_name: "vault"
+vault_config_cache_size: 32768
+vault_config_disable_mlock: False
+vault_config_default_lease_ttl: "32d"
+vault_config_max_lease_ttl: "32d"
+
+vault_config_listener_cluster_address:
+vault_config_listener_tls_disable: 1
+vault_config_listener_tls_cert_file:
+vault_config_listener_tls_key_file:
+vault_config_listener_tls_min_version:
+vault_config_listener_tls_cipher_suites:
+vault_config_listener_tls_prefer_server_cipher_suites:
+
+vault_config_enable_telemetry: False
+vault_config_telemetry_statsite_address: "127.0.0.1:8125"
+vault_config_telemetry_statsd_address: "127.0.0.1:8125"
+vault_config_telemetry_disable_hostname: "false"
+
+vault_config_consul_address: "127.0.0.1:8500"
+vault_config_consul_scheme: "http"
+vault_config_consul_check_timeout: "5s"
+vault_config_consul_disable_registration: "false"
+vault_config_consul_path: "vault"
+vault_config_consul_service: "vault"
+vault_config_consul_service_tags: []
+#vault_config_consul_token: "anonymous"
+vault_config_consul_max_parralel: 128
+vault_config_consul_tls_skip_verify: "false"
+vault_config_consul_tls_min_version: "tls12"
+# vault_config_consul_tls_ca_file:
+# vault_config_consul_tls_cert_file:
+# vault_config_consul_tls_key_file:
