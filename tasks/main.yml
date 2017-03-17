@@ -5,12 +5,15 @@
 - name: "add vault group"
   group:
     name: "{{ vault_group }}"
-    
+
 - name: "add vault user"
   user:
     name: "{{ vault_user }}"
     comment: "Vault user"
     group: "{{ vault_group }}"
+
+- name: Install vault packages
+  include: install.yml
 
 # according to https://www.vaultproject.io/docs/config/index.html required to allow non-root mlock
 - name: Enable non root mlock capability
@@ -28,6 +31,14 @@
     - "{{ vault_log_path }}"
     - /var/run/vault
     - "{{ vault_config_path }}"
+
+- include: tls.yml
+
+- name: create vault listener configuration section
+  template:
+    src: vault_listener.hcl.j2
+    dest: "{{ vault_main_config }}"
+  notify: restart vault
 
 - name: install systemd script
   template:

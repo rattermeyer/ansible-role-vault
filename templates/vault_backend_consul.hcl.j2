@@ -1,9 +1,10 @@
 backend "consul" {
   address = "{{ vault_consul }}"
-  redirect_addr = "http://{{ vault_redirect_addr }}:{{ vault_port }}"
-  cluster_addr = "http://{{ vault_primary_node }}:{{ vault_port }}/"
+  redirect_addr = "http://{{ vault_redirect_addr }}:{{ vault_config_listener_port }}"
+  cluster_addr = "http://{{ vault_primary_node }}:{{ vault_config_listener_port + 1 }}/"
   scheme = "{{ vault_config_consul_scheme }}"
   check_timeout = "{{ vault_config_consul_check_timeout }}"
+  disable_registration =  "{{ vault_config_consul_disable_registration }}"
   {% if vault_config_consul_token %}
   token = "{{ vault_config_consul_token }}"
   {% endif %}

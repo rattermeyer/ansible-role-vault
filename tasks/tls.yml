@@ -1,0 +1,69 @@
+---
+# File: tasks/tls.yml - TLS tasks for vault
+- name: Create SSL directory
+  file:
+    dest: "{{ vault_tls_dest_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 755
+
+- block:
+  - name: create temporary directory
+    command: "mktemp -d --suffix=.cert"
+    register: temp_dir
+
+  - debug:
+      msg: "{{ temp_dir.stdout }}"
+      verbosity: 2
+
+  - name: Copy certificate
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_cert_file }}"
+      dest: "{{ temp_dir.stdout }}/01.pem"
+
+  - name: Copy CA certificate
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
+      dest: "{{ temp_dir.stdout }}/02.pem"
+
+  - name: Copy CA certificate
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
+      dest: "{{ vault_tls_dest_dir }}/ca.pem"
+
+  - name: assemble certificate
+    assemble:
+      src: "{{ temp_dir.stdout }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
+
+  #- name: Copy CA certificate
+  #  become: True
+  #  copy:
+  #    src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_crt }}"
+  #    dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_ca_crt }}"
+  #  notify:
+  #  - reload vault
+  #  - restart vault
+
+  #- name: Copy certificate
+  #  become: True
+  #  copy:
+  #    src: "{{ vault_tls_src_dir }}/{{ vault_tls_crt }}"
+  #    dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_crt }}.orig"
+  #  notify:
+  #  - reload vault
+  #  - restart vault
+
+  - name: Copy key
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_key_file }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_key_file }}"
+    notify:
+    - restart vault
+
+  when: vault_tls_disable == False

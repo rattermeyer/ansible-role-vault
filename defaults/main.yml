@@ -1,7 +1,7 @@
 ---
 # defaults file for rattermeyer.vault
 
-vault_version: "{{ lookup('env','VAULT_VERSION') | default('0.6.5', true) }}"
+vault_version: "{{ lookup('env','VAULT_VERSION') | default('0.7.0', true) }}"
 vault_pkg: "vault_{{ vault_version }}_linux_amd64.zip"
 vault_zip_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_pkg }}"
 vault_zip_sha256: "91432c812b1264306f8d1ecf7dd237c3d7a8b2b6aebf4f887e487c4e7f69338c"
@@ -16,11 +16,16 @@ vault_datacenter: "dc1"
 vault_log_level: "INFO"
 vault_syslog_enable: "true"
 vault_iface: "eth1"
-vault_address: "0.0.0.0"
+vault_config_listener_address: "0.0.0.0"
 vault_redirect_addr: "{{ hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address'] }}"
-vault_port: "8200"
+vault_config_listener_port: 8200
 vault_node_name: "{{ inventory_hostname_short }}"
 vault_primary_node: "{{hostvars[groups['primary'][0]]['ansible_fqdn']}}"
+
+vault_tls_disable: "{{ lookup('env','VAULT_TLS_DISABLE') | default(false, true) }}"
+vault_tls_src_dir: "{{ lookup('env','VAULT_TLS_SRC_DIR') | default(role_path+'/files', true) }}"
+vault_tls_dest_dir: "{{ lookup('env','VAULT_TLS_DEST_DIR') | default('/etc/vault/ssl', true) }}"
+vault_tls_ca_file: "{{ lookup('env','VAULT_TLS_CA_CRT') | default('ca.crt', true) }}"
 
 vault_main_config: "{{ vault_config_path }}/vault_main.hcl"
 vault_backend: vault_backend_consul.hcl.j2
