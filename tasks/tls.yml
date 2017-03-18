@@ -67,3 +67,28 @@
     - restart vault
 
   when: vault_tls_disable == False
+
+- block:
+  - name: Copy CA certificate
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_config_consul_tls_ca_crt }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_ca_crt }}"
+    notify:
+    - restart vault
+
+  - name: Copy certificate
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_config_consul_tls_crt }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_crt }}"
+    notify:
+    - restart vault
+
+  - name: Copy key
+    become: True
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_config_consul_tls_key }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_key }}"
+    notify:
+    - restart vault

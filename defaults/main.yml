@@ -26,6 +26,7 @@ vault_tls_disable: "{{ lookup('env','VAULT_TLS_DISABLE') | default(false, true) 
 vault_tls_src_dir: "{{ lookup('env','VAULT_TLS_SRC_DIR') | default(role_path+'/files', true) }}"
 vault_tls_dest_dir: "{{ lookup('env','VAULT_TLS_DEST_DIR') | default('/etc/vault/ssl', true) }}"
 vault_tls_ca_file: "{{ lookup('env','VAULT_TLS_CA_CRT') | default('ca.crt', true) }}"
+vault_scheme: "http"
 
 vault_main_config: "{{ vault_config_path }}/vault_main.hcl"
 vault_backend: vault_backend_consul.hcl.j2
@@ -54,7 +55,7 @@ vault_config_consul_address: "127.0.0.1:8500"
 vault_config_consul_scheme: "http"
 vault_config_consul_check_timeout: "5s"
 vault_config_consul_disable_registration: "false"
-vault_config_consul_path: "vault"
+vault_config_consul_path: "vault/"
 vault_config_consul_service: "vault"
 vault_config_consul_service_tags: []
 #vault_config_consul_token: "anonymous"
