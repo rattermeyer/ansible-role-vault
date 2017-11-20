@@ -6,7 +6,7 @@
     state: directory
     owner: root
     group: root
-    mode: 755
+    mode: 0755
 
 - block:
   - name: create temporary directory
@@ -17,6 +17,7 @@
       msg: "{{ temp_dir.stdout }}"
       verbosity: 2
 
+# now create combined certificate
   - name: Copy certificate
     become: True
     copy:
@@ -29,16 +30,36 @@
       src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
       dest: "{{ temp_dir.stdout }}/02.pem"
 
-  - name: Copy CA certificate
+  - name: assemble certificate
+    assemble:
+      src: "{{ temp_dir.stdout }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
+
+# single certificate
+  - name: Copy CA certificate - seperate
     become: True
     copy:
       src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
       dest: "{{ vault_tls_dest_dir }}/ca.pem"
 
-  - name: assemble certificate
-    assemble:
-      src: "{{ temp_dir.stdout }}"
-      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
+# we must also enable trusting this ca on the server
+# so vault cmd line client works correctly (without cert error)
+  - name: copy CA certificate to trust root
+    become: True
+    copy:
+      src: "{{ vault_tls_dest_dir }}/ca.pem"
+      dest: "/usr/share/ca-certificates/cluster-ca.crt"
+      remote_src: True
+
+  - name: insert CA cert into trusted certs
+    become: True
+    lineinfile:
+      path: /etc/ca-certificates.conf
+      line: cluster-ca.crt
+
+  - name: run update ca-certificates
+    become: True
+    command: /usr/sbin/update-ca-certificates
 
   #- name: Copy CA certificate
   #  become: True

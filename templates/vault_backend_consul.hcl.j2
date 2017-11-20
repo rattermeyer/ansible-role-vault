@@ -1,21 +1,21 @@
-backend "consul" {
+storage "consul" {
   address = "{{ vault_config_consul_address }}"
   redirect_addr = "{{ vault_scheme }}://{{ vault_redirect_addr }}:{{ vault_config_listener_port }}"
-  cluster_addr = "{{ vault_scheme }}://{{ vault_primary_node }}:{{ vault_config_listener_port + 1 }}/"
+  cluster_addr = "{{ vault_scheme }}://{{ vault_redirect_addr }}:{{ vault_config_listener_port + 1 }}/"
   scheme = "{{ vault_config_consul_scheme }}"
   check_timeout = "{{ vault_config_consul_check_timeout }}"
   disable_registration =  "{{ vault_config_consul_disable_registration }}"
-  {% if vault_config_consul_token %}
+  {% if vault_config_consul_token -%}
   token = "{{ vault_config_consul_token }}"
   {% endif %}
-  {% if vault_config_consul_tls_ca_file %}
+  {%- if vault_config_consul_tls_ca_file -%}
   tls_ca_file = "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_ca_file }}"
   {% endif %}
-  {% if vault_config_consul_tls_cert_file %}
+  {%- if vault_config_consul_tls_cert_file -%}
   tls_cert_file = "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_cert_file }}"
   {% endif %}
-  {% if vault_config_consul_tls_key_file %}
+  {%- if vault_config_consul_tls_key_file -%}
   tls_key_file = "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_key_file }}"
-  {% endif %}
+  {% endif -%}
   path = "vault"
 }

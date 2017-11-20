@@ -1,6 +1,8 @@
 {% include vault_backend with context %}
 
+{% if vault_telemetry_enabled %}
 {% include vault_telemetry with context %}
+{% endif %}
 
 cluster_name = "{{ vault_cluster_name }}"
 
@@ -8,7 +10,7 @@ listener "tcp" {
   address = "{{ vault_config_listener_address}}:{{ vault_config_listener_port }}"
   {% if vault_tls_disable == True -%}
   tls_disable = {{ vault_tls_disable | lower }}
-  {% else %}
+  {% else -%}
   tls_cert_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
   tls_key_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_key_file }}"
   {% endif %}
