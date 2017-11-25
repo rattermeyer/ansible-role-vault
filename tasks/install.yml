@@ -63,8 +63,39 @@
   unarchive:
     src: "{{ role_path }}/files/{{ vault_pkg }}"
     dest: "{{ role_path }}/files/"
-    creates: "{{ role_path }}/files/vault"
   run_once: true
+
+- name: check vault already installed
+  stat:
+     path: "{{ vault_bin_path }}/vault"
+  register: vault_bin
+
+- name: default extract version
+  set_fact:
+    extracted_version: "0.0.0"
+
+- name: extract installed vault version
+  block:
+  - name: parse vault version
+    shell: "vault version"
+    register: vault_installed_version
+    changed_when: False
+
+  - name: vault version
+    debug:
+      msg: "{{vault_installed_version}}"
+      verbosity: 2
+
+  - name: extract version
+    set_fact:
+      extracted_version: "{{ vault_installed_version.stdout | regex_search(regexp,'\\1') }}"
+    vars:
+      regexp: 'v(\d.\d.\d).'
+  - name: extracted version
+    debug:
+      msg: "{{extracted_version}}"
+      verbosity: 2
+  when: vault_bin.stat.exists == True
 
 - name: Install Vault
   copy:
@@ -73,6 +104,8 @@
     owner: "{{ vault_user }}"
     group: "{{ vault_group }}"
     mode: 0755
+    force: True
+  when: vault_version | version_compare(extracted_version, '>')
 
 #- name: Cleanup
 #  become: no
