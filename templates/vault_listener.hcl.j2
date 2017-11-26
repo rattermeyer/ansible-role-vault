@@ -11,7 +11,7 @@ listener "tcp" {
   {% if vault_tls_disable == True -%}
   tls_disable = {{ vault_tls_disable | lower }}
   {% else -%}
-  tls_cert_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
+  tls_cert_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_crt }}"
   tls_key_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_key_file }}"
   {% endif %}
 }

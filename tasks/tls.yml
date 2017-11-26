@@ -21,63 +21,42 @@
   - name: Copy certificate
     become: True
     copy:
-      src: "{{ vault_tls_src_dir }}/{{ vault_tls_cert_file }}"
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_crt }}"
       dest: "{{ temp_dir.stdout }}/01.pem"
 
   - name: Copy CA certificate
     become: True
     copy:
-      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_crt }}"
       dest: "{{ temp_dir.stdout }}/02.pem"
 
   - name: assemble certificate
     assemble:
       src: "{{ temp_dir.stdout }}"
-      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_cert_file }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_crt }}"
 
 # single certificate
   - name: Copy CA certificate - seperate
     become: True
     copy:
-      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_file }}"
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_crt }}"
       dest: "{{ vault_tls_dest_dir }}/ca.pem"
 
-# we must also enable trusting this ca on the server
-# so vault cmd line client works correctly (without cert error)
-  - name: copy CA certificate to trust root
+  - name: Copy CA certificate
     become: True
     copy:
-      src: "{{ vault_tls_dest_dir }}/ca.pem"
-      dest: "/usr/share/ca-certificates/cluster-ca.crt"
-      remote_src: True
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_crt }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_ca_crt }}"
+    notify:
+    - restart vault
 
-  - name: insert CA cert into trusted certs
+  - name: Copy certificate
     become: True
-    lineinfile:
-      path: /etc/ca-certificates.conf
-      line: cluster-ca.crt
-
-  - name: run update ca-certificates
-    become: True
-    command: /usr/sbin/update-ca-certificates
-
-  #- name: Copy CA certificate
-  #  become: True
-  #  copy:
-  #    src: "{{ vault_tls_src_dir }}/{{ vault_tls_ca_crt }}"
-  #    dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_ca_crt }}"
-  #  notify:
-  #  - reload vault
-  #  - restart vault
-
-  #- name: Copy certificate
-  #  become: True
-  #  copy:
-  #    src: "{{ vault_tls_src_dir }}/{{ vault_tls_crt }}"
-  #    dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_crt }}.orig"
-  #  notify:
-  #  - reload vault
-  #  - restart vault
+    copy:
+      src: "{{ vault_tls_src_dir }}/{{ vault_tls_crt }}"
+      dest: "{{ vault_tls_dest_dir }}/{{ vault_tls_crt }}.orig"
+    notify:
+    - restart vault
 
   - name: Copy key
     become: True

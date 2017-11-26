@@ -13,7 +13,7 @@
     group: "{{ vault_group }}"
 
 - name: Install vault packages
-  include: install.yml
+  import_tasks: install.yml
 
 # according to https://www.vaultproject.io/docs/config/index.html required to allow non-root mlock
 - name: Enable non root mlock capability
@@ -32,7 +32,7 @@
     - /var/run/vault
     - "{{ vault_config_path }}"
 
-- include: tls.yml
+- import_tasks: tls.yml
 
 - name: create vault listener configuration section
   template:

@@ -35,17 +35,17 @@ vault_primary_node: "{{hostvars[groups['primary'][0]]['ansible_fqdn']}}"
 
 #
 # TLS related configuration
-# 
+#
 vault_tls_disable: "{{ lookup('env','VAULT_TLS_DISABLE') | default(false, true) }}"
 # directory where TLS certificates are read from
 vault_tls_src_dir: "{{ lookup('env','VAULT_TLS_SRC_DIR') | default(role_path+'/files', true) }}"
 # directory where TLS certificates should be written to
 vault_tls_dest_dir: "{{ lookup('env','VAULT_TLS_DEST_DIR') | default('/etc/vault/ssl', true) }}"
 # file name of the CA cert
-vault_tls_ca_file: "{{ lookup('env','VAULT_TLS_CA_CRT') | default('ca.crt', true) }}"
+vault_tls_ca_file: "{{ lookup('env','VAULT_TLS_CA_CRT') | default('ca.pem', true) }}"
 vault_scheme: "http"
 
-# 
+#
 # Define paths and names where to find different vault config files
 #
 vault_main_config: "{{ vault_config_path }}/vault_main.hcl"
