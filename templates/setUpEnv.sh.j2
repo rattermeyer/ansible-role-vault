@@ -1,0 +1,9 @@
+#!/bin/sh
+VAULT_ADDR=https://{{ nomad_bind_addr }}:4646
+export VAULT_ADDR
+VAULT_CACERT={{vault_tls_dest_dir}}/{{ vault_tls_ca_crt }}
+export VAULT_CACERT
+VAULT_CLIENT_CERT={{vault_tls_dest_dir}}/{{ vault_tls_client_crt }}
+export VAULT_CLIENT_CERT
+VAULT_CLIENT_KEY={{vault_tls_dest_dir}}/{{ vault_tls_client_key }}
+export VAULT_CLIENT_KEY
