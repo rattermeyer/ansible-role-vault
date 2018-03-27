@@ -92,3 +92,9 @@
       dest: "{{ vault_tls_dest_dir }}/{{ vault_config_consul_tls_key }}"
     notify:
     - restart vault
+
+  - name: copy vault env setup
+    become: True
+    template:
+      src: setUpEnv.sh.j2
+      dest: "{{ vault_tls_dest_dir }}/setUpEnv.sh"
