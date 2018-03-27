@@ -6,11 +6,11 @@
 #
 #
 # vault_version can also be defined via environment variable: VAULT_VERSION
-vault_version: "{{ lookup('env','VAULT_VERSION') | default('0.9.0', true) }}"
+vault_version: "{{ lookup('env','VAULT_VERSION') | default('0.9.6', true) }}"
 # the pkg could be modified to install arm or other versions. see https://releases.hashicorp.com/vault
 vault_pkg: "vault_{{ vault_version }}_linux_amd64.zip"
 vault_zip_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/{{ vault_pkg }}"
-vault_zip_sha256: "801ce0ceaab4d2e59dbb35ea5191cfe8e6f36bb91500e86bec2d154172de59a4"
+vault_zip_sha256: "3f1f346ff7aaf367fed6a3e83e5a07fdc032f22860585e36c3674f9ead08dbaf"
 
 # define different paths
 vault_bin_path: "/usr/local/bin"
