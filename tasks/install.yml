@@ -95,6 +95,10 @@
     debug:
       msg: "{{extracted_version}}"
       verbosity: 2
+  - name: vault_version
+    debug:
+      msg: "{{vault_version}}"
+      verbosity: 2    
   when: vault_bin.stat.exists == True
 
 - name: Install Vault
@@ -105,7 +109,7 @@
     group: "{{ vault_group }}"
     mode: 0755
     force: True
-  when: vault_version | version_compare(extracted_version, '>')
+  when: vault_version | version_compare(extracted_version, '<')
 
 #- name: Cleanup
 #  become: no

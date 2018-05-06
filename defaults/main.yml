@@ -43,6 +43,7 @@ vault_tls_src_dir: "{{ lookup('env','VAULT_TLS_SRC_DIR') | default(role_path+'/f
 vault_tls_dest_dir: "{{ lookup('env','VAULT_TLS_DEST_DIR') | default('/etc/vault/ssl', true) }}"
 # file name of the CA cert
 vault_tls_ca_file: "{{ lookup('env','VAULT_TLS_CA_CRT') | default('ca.pem', true) }}"
+vault_tls_require_and_verify_client_cert: "true"
 vault_scheme: "http"
 
 #
