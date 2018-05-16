@@ -90,7 +90,7 @@
     set_fact:
       extracted_version: "{{ vault_installed_version.stdout | regex_search(regexp,'\\1') }}"
     vars:
-      regexp: 'v(\d.\d.\d).'
+      regexp: 'v(\d+.\d+.\d+).'
   - name: extracted version
     debug:
       msg: "{{extracted_version}}"
@@ -109,7 +109,8 @@
     group: "{{ vault_group }}"
     mode: 0755
     force: True
-  when: vault_version | version_compare(extracted_version, '<')
+  when: (vault_version is version_compare(extracted_version, '<')) or
+    (vault_bin.stat.exists == False)
 
 #- name: Cleanup
 #  become: no

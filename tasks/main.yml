@@ -48,3 +48,9 @@
     group: root
     mode: 0644
   notify: restart vault
+
+- name: ensure vault is started and enabled
+  service:
+    name: vault
+    state: started
+    enabled: True

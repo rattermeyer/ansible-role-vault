@@ -15,3 +15,5 @@ listener "tcp" {
   tls_key_file = "{{ vault_tls_dest_dir }}/{{ vault_tls_key_file }}"
   {% endif %}
 }
+
+ui = true
